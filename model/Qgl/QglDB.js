@@ -1,5 +1,4 @@
 // import mongoose from "mongoose";
-
 // const Schema = mongoose.Schema;
 
 // const annualsettelmentSchema = new Schema(
@@ -34,6 +33,7 @@
 //   "annualsettelments"
 // );
 
+import { string } from "joi";
 import mongoose from "mongoose";
 
 const Schema=mongoose.Schema;
@@ -43,8 +43,9 @@ const Receipt = new Schema({
   name:{type:String,require:true},
   amount:{type:Number,require:true},
   membership:{type:Number,require:true},
-  cash:{type:Number,require:true},
-  being:{type:Number,require:true},
+  cash:{type:String,require:true},
+  being:{type:String,require:true},
+  microchip:{type:Date,require:true},
 })
 
 export default mongoose.model('Receipt',Receipt,"Receipt")

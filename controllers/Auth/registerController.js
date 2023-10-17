@@ -7,7 +7,7 @@ import JWT from "../../services/Jwt";
 const registerSchema = {
   async register(req, res, next) {
     const { name, email, password } = req.body;
-
+ 
     const RegisterSchema = Joi.object({
       name: Joi.string().required(),
       email: Joi.string().email().required(),

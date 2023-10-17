@@ -3,36 +3,45 @@ import Receipt from '../../model/Qgl/QglDB'
 const QglController={
     //--------------------------------------------------------- post request ------------------------------------------------------------
     async receipt(req,res,next){
-      const {doc,date,name,amount,membership,cash,being}=req.body;
-      console.log(req.body)
-      let receipt
-      try{
-        receipt = await Receipt.create({
-           doc,
-            date,
-            name,
-            amount,
-            membership,
-            cash,
-            being,
-        });
+      const {doc,date,name,amount,membership,cash,being,microchip}=req.body
+      if(!doc|| !date|| !name|| !amount|| !membership|| !cash|| !being|| !microchip){
+        res.status(400).send("Bad Request")
+      }else{
+        let receipt 
+        try{
+          receipt = await Receipt.create({
+             doc,
+              date,
+              name,
+              amount,
+              membership,
+              cash,
+              being,
+              microchip
+          });
+      
+        
+        if(!receipt){
+          return next(new Error ("product Not Added"))
+        }
+        
+        
+      }
+      catch(error){
+          return next (error);
+          console.log(error)
+        }
+        console.log(req.body)
+   
+        res.json(receipt)
+        console.log(receipt)
+      }
     
-      
-      if(!receipt){
-        return next(new Error ("product Not Added"))
-      }
-      
-      
-    }catch(error){
-        return next (error);
-        console.log(error)
-      }
-      res.json(receipt)
-      console.log(receipt)
+ 
     },
     //--------------------------------------------------------- update request ------------------------------------------------------------
     async updatereceipt(req,res,next){
-      const {doc,date,name,amount,membership,cash,being}=req.body;
+      const {doc,date,name,amount,membership,cash,being,microchip}=req.body;
       console.log(req.body)
       let updatereceipt;
       
@@ -47,6 +56,7 @@ const QglController={
               membership,
               cash,
               being,
+              microchip
           },{new:true}
           );
       } catch (error) {
