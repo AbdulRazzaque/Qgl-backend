@@ -29,5 +29,4 @@ let headAuth = req.headers.authorization
 
 }
 
-// export default auth
 module.exports = auth;

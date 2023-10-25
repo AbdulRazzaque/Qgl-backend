@@ -1,9 +1,3 @@
-// import Joi from "joi";
-
-// import User from "../../model/authmodle/user.js";
-// import bcrypt from "bcrypt";
-
-// import JWT from "../../services/Jwt.js";
 const Joi = require("joi");
 const User = require("../../model/authmodle/user.js");
 const bcrypt = require("bcrypt");
@@ -21,7 +15,7 @@ const LoginSchema = {
       return next(error);
     }
 
-    //--------------chack user-------------
+    //-------------------------------------------chack user-----------------------
     let AccessToken;
     let loginUser
     try {
@@ -33,7 +27,7 @@ const LoginSchema = {
     } catch (error) {
       return next(error);
     }
-    //-------------match password---------------------
+    //---------------match password code here---------------------
     console.log(loginUser)
 
     const match =  bcrypt.compare(req.body.password, loginUser.password);

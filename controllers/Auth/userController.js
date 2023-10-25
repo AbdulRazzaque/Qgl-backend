@@ -1,5 +1,4 @@
 
-// import User from "../../model/authmodle/user.js";
 const User = require("../../model/authmodle/user.js");
 
 const userController ={
@@ -24,5 +23,4 @@ const userController ={
 
 }
 
-// export default userController
 module.exports = userController
