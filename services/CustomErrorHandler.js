@@ -9,4 +9,6 @@ class CustomErrorHandler extends Error {
   }
 }
 
-export default CustomErrorHandler;
+// export default CustomErrorHandler;
+module.exports = CustomErrorHandler;
+

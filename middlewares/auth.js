@@ -1,4 +1,5 @@
-import JWT from "../services/Jwt"
+// import JWT from "../services/Jwt.js"
+const JWT = require("../services/Jwt.js");
 
 const auth=(req,rex,next)=>{
 let headAuth = req.headers.authorization 
@@ -28,4 +29,5 @@ let headAuth = req.headers.authorization
 
 }
 
-export default auth
+// export default auth
+module.exports = auth;

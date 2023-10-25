@@ -1,9 +1,13 @@
-import Joi from "joi";
+// import Joi from "joi";
 
-import User from "../../model/authmodle/user";
-import bcrypt from "bcrypt";
+// import User from "../../model/authmodle/user.js";
+// import bcrypt from "bcrypt";
 
-import JWT from "../../services/Jwt";
+// import JWT from "../../services/Jwt.js";
+const Joi = require("joi");
+const User = require("../../model/authmodle/user.js");
+const bcrypt = require("bcrypt");
+const JWT = require("../../services/Jwt.js");
 
 const LoginSchema = {
   async login(req, res, next) {
@@ -42,4 +46,6 @@ const LoginSchema = {
     res.json({ AccessToken });
   },
 };
-export default LoginSchema;
+// export default LoginSchema;
+module.exports = LoginSchema;
+

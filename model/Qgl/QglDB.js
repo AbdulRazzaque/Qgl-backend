@@ -33,8 +33,10 @@
 //   "annualsettelments"
 // );
 
-import { string } from "joi";
-import mongoose from "mongoose";
+// import { string } from "joi";
+// import mongoose from "mongoose";
+const mongoose = require("mongoose");
+
 
 const Schema=mongoose.Schema;
 const Receipt = new Schema({
@@ -48,4 +50,6 @@ const Receipt = new Schema({
   microchip:{type:Date,require:true},
 })
 
-export default mongoose.model('Receipt',Receipt,"Receipt")
+// export default mongoose.model('Receipt',Receipt,"Receipt")
+module.exports = mongoose.model('Receipt', Receipt, 'Receipt');
+

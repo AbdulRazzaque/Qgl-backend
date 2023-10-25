@@ -1,4 +1,6 @@
-import Receipt from '../../model/Qgl/QglDB'
+// import Receipt from '../../model/Qgl/QglDB.js'
+const Receipt = require('../../model/Qgl/QglDB.js');
+
 
 const QglController={
     //--------------------------------------------------------- post request ------------------------------------------------------------
@@ -100,4 +102,5 @@ const QglController={
   }
 }
 
-export default QglController
+// export default QglController
+module.exports = QglController;

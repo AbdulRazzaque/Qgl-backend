@@ -1,4 +1,6 @@
-import jwt from "jsonwebtoken"
+// import jwt from "jsonwebtoken"
+const jwt = require("jsonwebtoken");
+
 
 class JWT{
  static sign(payload,expriy= '1y',secrect= process.env.SECRECT){
@@ -12,4 +14,5 @@ class JWT{
 }
 
 
-export default JWT
+// export default JWT
+module.exports = JWT;

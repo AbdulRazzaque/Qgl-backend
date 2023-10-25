@@ -1,5 +1,8 @@
-import pkg from "joi";
-import CustomErrorHandler from "../services/CustomErrorHandler";
+// import pkg from "joi";
+// import CustomErrorHandler from "../services/CustomErrorHandler.js";
+const pkg = require("joi");
+const CustomErrorHandler = require("../services/CustomErrorHandler.js");
+
 const { ValidationError } = pkg;
 
 const errorHandler = (err, req, res, next) => {
@@ -26,4 +29,5 @@ const errorHandler = (err, req, res, next) => {
   return res.status(statusCode).json(data);
 };
 
-export default errorHandler;
+// export default errorHandler;
+module.exports = errorHandler;

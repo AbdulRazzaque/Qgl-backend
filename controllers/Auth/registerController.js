@@ -1,9 +1,16 @@
-import Joi from "joi";
-import CustomErrorHandler from "../../services/CustomErrorHandler";
-import User from "../../model/authmodle/user";
-import bcrypt from "bcrypt";
-import { hash } from "bcrypt";
-import JWT from "../../services/Jwt";
+// import Joi from "joi";
+// import CustomErrorHandler from "../../services/CustomErrorHandler.js";
+// import User from "../../model/authmodle/user.js";
+// import bcrypt from "bcrypt";
+// import { hash } from "bcrypt";
+// import JWT from "../../services/Jwt.js";
+const Joi = require("joi");
+const CustomErrorHandler = require("../../services/CustomErrorHandler.js");
+const User = require("../../model/authmodle/user.js");
+const bcrypt = require("bcrypt");
+const { hash } = require("bcrypt");
+const JWT = require("../../services/Jwt.js");
+
 const registerSchema = {
   async register(req, res, next) {
     const { name, email, password } = req.body;
@@ -54,4 +61,5 @@ const registerSchema = {
   },
 };
 
-export default registerSchema;
+module.exports = registerSchema
+// export default registerSchema;

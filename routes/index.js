@@ -1,11 +1,18 @@
-import express from 'express'
-import registerSchema from '../controllers/Auth/registerController'
-import LoginSchema from '../controllers/Auth/loginController'
-import userController from '../controllers/Auth/userController'
-import auth from '../middlewares/auth'
-import QglController from '../controllers/Auth/QglController'
+// import express from 'express'
+// import registerSchema from '../controllers/Auth/registerController.js'
+// import LoginSchema from '../controllers/Auth/loginController.js'
+// import userController from '../controllers/Auth/userController.js'
+// import auth from '../middlewares/auth.js'
+// import QglController from '../controllers/Auth/QglController.js'
 // import RprenewalformController from '../controllers/Forms/RprenewalformController'
 // import RprenewalformController from '../controllers/Forms/RprenewalformController'
+const express = require('express');
+const registerSchema = require('../controllers/Auth/registerController.js');
+const LoginSchema = require('../controllers/Auth/loginController.js');
+const userController = require('../controllers/Auth/userController.js');
+const auth = require('../middlewares/auth.js');
+const QglController = require('../controllers/Auth/QglController.js');
+
 
 
 const Route = express.Router()
@@ -34,4 +41,5 @@ Route.delete('/deletereceipt/:id',QglController.deletereceipt)
 
 
 
-export default Route
+// export default Route
+module.exports = Route;
