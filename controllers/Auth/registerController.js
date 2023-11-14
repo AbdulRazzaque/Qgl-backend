@@ -4,11 +4,11 @@ const User = require("../../model/authmodle/user.js");
 const bcrypt = require("bcrypt");
 const { hash } = require("bcrypt");
 const JWT = require("../../services/Jwt.js");
-
+ 
 const registerSchema = {
   async register(req, res, next) {
     const { name, email, password } = req.body;
- 
+
     const RegisterSchema = Joi.object({
       name: Joi.string().required(),
       email: Joi.string().email().required(),
@@ -51,7 +51,7 @@ const registerSchema = {
       return next(err);
     }
 
-    return res.json(user);
+    return res.json(AccessToken);
   },
 };
 
