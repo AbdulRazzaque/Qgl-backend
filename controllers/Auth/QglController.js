@@ -6,10 +6,10 @@ const QglController={
     async receipt(req,res,next){
       const {doc,date,name,amount,membership,cash,being,microchip}=req.body
       if(!doc|| !date|| !name|| !amount|| !membership|| !cash|| !being|| !microchip){
-        res.status(400).send("Bad Request")
+        res.status(400).send("please fill all required fields")
       }else{
         let receipt 
-        try{
+         try{
           receipt = await Receipt.create({
              doc,
               date,

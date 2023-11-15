@@ -44,7 +44,7 @@ const Receipt = new Schema({
   date:{type:Date,require:true},
   name:{type:String,require:true},
   amount:{type:Number,require:true},
-  membership:{type:Number,require:true},
+  membership:{type:String,require:true},
   cash:{type:String,require:true},
   being:{type:String,require:true},
   microchip:{type:Date,require:true},
