@@ -47,6 +47,7 @@ const Receipt = new Schema({
   membership:{type:String,require:true},
   cash:{type:String,require:true},
   being:{type:String,require:true},
+  category:{type:String,require:true},
   microchip:{type:Date,require:true},
 })
 

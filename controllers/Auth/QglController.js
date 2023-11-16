@@ -4,8 +4,9 @@ const date = require("date-and-time");
 const QglController={
     //--------------------------------------------------------- post request ------------------------------------------------------------
     async receipt(req,res,next){
-      const {doc,date,name,amount,membership,cash,being,microchip}=req.body
-      if(!doc|| !date|| !name|| !amount|| !membership|| !cash|| !being|| !microchip){
+      const {doc,date,name,amount,membership,cash,being,microchip,category}=req.body
+      console.log(req.body,"Cheack here first time")
+      if(!doc|| !date|| !name|| !amount|| !membership|| !cash|| !being|| !microchip || !category){
         res.status(400).send("please fill all required fields")
       }else{
         let receipt 
@@ -18,7 +19,8 @@ const QglController={
               membership,
               cash,
               being,
-              microchip
+              microchip,
+              category
           });
       
         
@@ -35,15 +37,15 @@ const QglController={
         console.log(req.body)
    
         res.json(receipt)
-        console.log(receipt)
+        console.log(receipt,"Cheack here second time")
       }
     
  
     },
     //--------------------------------------------------------- update request ------------------------------------------------------------
     async updatereceipt(req,res,next){
-      const {doc,date,name,amount,membership,cash,being,microchip}=req.body;
-      console.log(req.body)
+      const {doc,date,name,amount,membership,cash,being,microchip,category}=req.body;
+      console.log(req.body,"Firs time cheack")
       let updatereceipt;
       
         try{
@@ -57,7 +59,8 @@ const QglController={
               membership,
               cash,
               being,
-              microchip
+              microchip,
+              category
           },{new:true}
           );
       } catch (error) {
@@ -65,6 +68,7 @@ const QglController={
         
       }
       res.json(updatereceipt)
+      console.log(updatereceipt,"This ceheack second time")
 
   },
 
