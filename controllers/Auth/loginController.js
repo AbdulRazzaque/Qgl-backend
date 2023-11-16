@@ -30,7 +30,7 @@ const LoginSchema = {
       }
       
     AccessToken = JWT.sign({ _id: loginUser._id });
-    res.json({ AccessToken });
+    res.json(loginUser);
     } catch (error) {
       return next(error);
     }

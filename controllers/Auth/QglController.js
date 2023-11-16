@@ -3,45 +3,53 @@ const date = require("date-and-time");
 
 const QglController={
     //--------------------------------------------------------- post request ------------------------------------------------------------
-    async receipt(req,res,next){
-      const {doc,date,name,amount,membership,cash,being,microchip,category}=req.body
-      console.log(req.body,"Cheack here first time")
-      if(!doc|| !date|| !name|| !amount|| !membership|| !cash|| !being|| !microchip || !category){
-        res.status(400).send("please fill all required fields")
-      }else{
-        let receipt 
-         try{
-          receipt = await Receipt.create({
-             doc,
+
+ 
+    async receipt(req, res, next) {
+      const { doc, date, name, amount, membership, cash, being, microchip, category, duplicate } = req.body;
+      console.log(req.body, "Check here first time");
+    
+      if (!doc || !date || !name || !amount || !membership || !cash || !being || !microchip || !category) {
+        res.status(400).send("Please fill all required fields");
+      } else {
+        try {
+          const receipts = [];
+    
+          // Duplicate data based on the 'duplicate' field
+          for (let i = 0; i < duplicate; i++) {
+            // const docNumber = `${doc}.${i}`;
+            const docNumber = parseFloat(`${doc}.${i}`).toFixed(2);
+            
+            const receipt = await Receipt.create({
+              doc: parseFloat(docNumber),
               date,
-              name,
+              name, 
               amount,
               membership,
               cash,
               being,
               microchip,
-              category
-          });
-      
-        
-        if(!receipt){
-          return next(new Error ("product Not Added"))
-        }
-        
-        
-      }
-      catch(error){
-          return next (error);
-          console.log(error)
-        }
-        console.log(req.body)
-   
-        res.json(receipt)
-        console.log(receipt,"Cheack here second time")
-      }
+              category,
+            });
     
- 
+            if (!receipt) {
+              return next(new Error("Receipt Not Added"));
+            }
+    
+            receipts.push(receipt);
+          }
+    
+          console.log(req.body);
+          res.json(receipts);
+          console.log(receipts, "Check here second time");
+        } catch (error) {
+          console.error(error);
+          return next(error);
+        }
+      }
     },
+    
+    
     //--------------------------------------------------------- update request ------------------------------------------------------------
     async updatereceipt(req,res,next){
       const {doc,date,name,amount,membership,cash,being,microchip,category}=req.body;
