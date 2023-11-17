@@ -17,11 +17,12 @@ const QglController={
     
           // Duplicate data based on the 'duplicate' field
           for (let i = 0; i < duplicate; i++) {
-            // const docNumber = `${doc}.${i}`;
-            const docNumber = parseFloat(`${doc}.${i}`).toFixed(2);
+            const docNumber = `${doc}.${i}`;
+            // const docNumber = parseFloat(`${doc}.${i}`).toFixed(2);
             
             const receipt = await Receipt.create({
-              doc: parseFloat(docNumber),
+              // doc: parseFloat(docNumber),
+              doc:docNumber,
               date,
               name, 
               amount,
