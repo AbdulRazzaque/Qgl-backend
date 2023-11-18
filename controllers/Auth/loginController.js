@@ -43,4 +43,3 @@ const LoginSchema = {
 };
 // export default LoginSchema;
 module.exports = LoginSchema;
-

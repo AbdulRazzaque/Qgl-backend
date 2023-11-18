@@ -3,7 +3,7 @@ const Membership = require("../../model/Qgl/MembershipDb")
 const Membershipcontroller ={
      async addmembership(req,res,next){
         const {membershipno,ownername,nationality,nationalid,telephone,extratelelphone}=req.body;
-        if(!membershipno|| !ownername|| !nationality|| !nationalid){
+        if(!membershipno|| !ownername){
             res.status(400).send("please fill all required fields")
              // res.status(400).send({ message: 'This product is already available' });
         }
