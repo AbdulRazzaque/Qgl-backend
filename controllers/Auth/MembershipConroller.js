@@ -6,7 +6,7 @@ const Membershipcontroller ={
         if(!membershipno|| !ownername){
             res.status(400).send("please fill all required fields")
              // res.status(400).send({ message: 'This product is already available' });
-        }
+         }
         const membershipexist = await Membership.exists({membershipno:req.body.membershipno})
         if(membershipexist){
             res.status(400).send("This Membership Already Exist")

@@ -3,13 +3,82 @@ const date = require("date-and-time");
 
 const QglController={
     //--------------------------------------------------------- post request ------------------------------------------------------------
+    // async receipt(req, res, next) {
+    //   const { doc, date, name, amount, membership, cash, being, microchip, category,telephone, duplicate } = req.body;
+    //   console.log(req.body, "Check here first time");
+    
+    //   if (!doc || !date || !name || !amount || !membership || !cash || !being  || !category || !telephone) {
+    //     res.status(400).send("Please fill all required fields");
+    //   } else {
+    //     try {
+    //       const receipts = [];
+    
+    //       // Duplicate data based on the 'duplicate' field
+    //       for (let i = 0; i < duplicate; i++) {
+    //         const docNumber = `${doc}/${i}`;
+    //         const receiptData = await Receipt.create({
+    //           doc:docNumber,
+    //           date,
+    //           name, 
+    //           amount,
+    //           membership,
+    //           cash,
+    //           being,
+    //           category,
+    //           telephone
+    //         });
+            
+    //         // Cheack if 'microchip' is present before adding it to receiptData 
+    //         if (req.body.microchip){
+    //           receiptData.microchip = req.body.microchip;
+    //         }
+    //         const receipt = await Receipt.create(receiptData)
 
- 
+    //         if (!receipt) {
+    //           return next(new Error("Receipt Not Added"));
+    //         }
+    
+    //         receipts.push(receipt);
+    //       }
+    
+    //       console.log(req.body);
+    //       res.json(receipts);
+    //       console.log(receipts, "Check here second time");
+    //     } catch (error) {
+    //       console.error(error);
+    //       return next(error);
+    //     }
+    //   }
+    // },
+    
     async receipt(req, res, next) {
-      const { doc, date, name, amount, membership, cash, being, microchip, category, duplicate } = req.body;
+      const {
+        doc,
+        date,
+        name,
+        amount,
+        membership,
+        cash,
+        being,
+        category,
+        telephone,
+        duplicate,
+        microchip
+      } = req.body;
+    
       console.log(req.body, "Check here first time");
     
-      if (!doc || !date || !name || !amount || !membership || !cash || !being || !microchip || !category) {
+      if (
+        !doc ||
+        !date ||
+        !name ||
+        !amount ||
+        !membership ||
+        !cash ||
+        !being ||
+        !category ||
+        !telephone
+      ) {
         res.status(400).send("Please fill all required fields");
       } else {
         try {
@@ -18,20 +87,24 @@ const QglController={
           // Duplicate data based on the 'duplicate' field
           for (let i = 0; i < duplicate; i++) {
             const docNumber = `${doc}/${i}`;
-            // const docNumber = parseFloat(`${doc}.${i}`).toFixed(2);
-            
-            const receipt = await Receipt.create({
-              // doc: parseFloat(docNumber),
-              doc:docNumber,
+            const receiptData = {
+              doc: docNumber,
               date,
-              name, 
+              name,
               amount,
               membership,
               cash,
               being,
-              microchip,
               category,
-            });
+              telephone,
+            };
+    
+            // Cheack if 'microchip' is a valid data before adding it to receiptData
+            if (microchip && !isNaN (Date.parse(microchip))) {
+              receiptData.microchip = new Date( microchip);
+            }
+    
+            const receipt = await Receipt.create(receiptData);
     
             if (!receipt) {
               return next(new Error("Receipt Not Added"));
@@ -50,10 +123,9 @@ const QglController={
       }
     },
     
-    
     //--------------------------------------------------------- update request ------------------------------------------------------------
     async updatereceipt(req,res,next){
-      const {doc,date,name,amount,membership,cash,being,microchip,category}=req.body;
+      const {doc,date,name,amount,membership,cash,being,microchip,category,telephone}=req.body;
       console.log(req.body,"Firs time cheack")
       let updatereceipt;
       
@@ -69,7 +141,8 @@ const QglController={
               cash,
               being,
               microchip,
-              category
+              category,
+              telephone
           },{new:true}
           );
       } catch (error) {
@@ -119,26 +192,7 @@ const QglController={
       console.log(pre);
       
     },
-    // try {
-    //   let pre;
-    //   const d1 = new Date(req.body.from);
-    //   const d2 = new Date(req.body.to);
-    // // Set the time of toDate to the end of the day
-    // d2.setHours(23, 59, 59, 999);
-    //   pre = await Receipt.find({
-    //     // name: req.body.name,
-    //     RequiredAnalysis: req.body.RequiredAnalysis,
-    //     date: { $eq: d1, $eq: d2 },
-    //   });
-    
-    //   res.status(200).send({ msg: "success", pre });
-    //   console.log(pre);
-    // } catch (error) {
-    //   console.error(error);
-    //   res.status(500).send({ msg: "error", error: error.message });
-    // }
-    
-
+ 
 
     //--------------------------------------------------------- Delete request ------------------------------------------------------------
   async deletereceipt(req,res,next){
@@ -154,7 +208,36 @@ const QglController={
       
     }
     res.json(receipt)
+  },
+  // async deletereceipts(req,res,next){
+ 
+  //   try {
+  //    const  result = await Receipt.remove({_id:{$in:req.params.id}});
+  //     if (result.deletedCount === 0){
+  //       return res.status(404).json({Message: "No document matched the IDs"})
+  //     }
+  //     res.status(204).end(); // Send a successfull "NO Content " response
+  //   } catch (error) {
+  //     return next(error)
+      
+  //   }
+  //   // res.json(receipt)
+  // }
+  async deletereceipts(req, res, next) {
+    try {
+      // Split the comma- Separted IDs into an array
+      const ids = req.params.id.split(',')
+      const result = await Receipt.deleteMany({ _id: { $in: ids } });
+      console.log(ids)
+      if (result.deletedCount === 0) {
+        return res.status(404).json({ Message: "No document matched the IDs" });
+      }
+      res.status(200).json({Message:"Data deleted successfully"}); // Send a successful "No Content" response
+    } catch (error) {
+      return next(error);
+    }
   }
+  
 }
 
 module.exports = QglController;

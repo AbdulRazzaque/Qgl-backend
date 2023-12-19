@@ -22,7 +22,7 @@ dotenv.config({
 // global.appRoot= path.resolve(__dirname);
 app.use(cors())
 app.use(express.urlencoded({extended: false}))
-app.use(express.json());7
+app.use(express.json());
 app.use('/api',Route)
 app.use('/uploads',express.static('uploads'))
 

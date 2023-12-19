@@ -49,6 +49,7 @@ const Receipt = new Schema({
   being:{type:String,require:true},
   category:{type:String,require:true},
   microchip:{type:Date,require:true},
+  telephone:{type:String,require:true},
 })
 
 // export default mongoose.model('Receipt',Receipt,"Receipt")

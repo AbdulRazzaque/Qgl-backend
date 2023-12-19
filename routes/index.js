@@ -24,6 +24,7 @@ Route.post('/monthlyreportQGl',QglController.monthlyreportQGl)
 Route.put('/updatereceipt/:id',QglController.updatereceipt)
 Route.get('/getreceipt/',QglController.getreceipt) 
 Route.delete('/deletereceipt/:id',QglController.deletereceipt)
+Route.delete('/deletereceipts/:id',QglController.deletereceipts)
 // =========================Member Ship Api======================================
 Route.post('/addmembership/',Membershipcontroller.addmembership)
 Route.get('/getmembers/',Membershipcontroller.getmembers)
