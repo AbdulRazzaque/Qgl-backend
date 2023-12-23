@@ -28,6 +28,7 @@ Route.delete('/deletereceipts/:id',QglController.deletereceipts)
 // =========================Member Ship Api======================================
 Route.post('/addmembership/',Membershipcontroller.addmembership)
 Route.get('/getmembers/',Membershipcontroller.getmembers)
+Route.get('/autocompleteMembers/',Membershipcontroller.autocompleteMembers)
 Route.put('/updatamembers/:id',Membershipcontroller.updatamembers)
 Route.delete('/deletemembers/:id',Membershipcontroller.deletemembers)
 

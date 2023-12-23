@@ -34,7 +34,7 @@ const LoginSchema = {
     } catch (error) {
       return next(error);
     }
-    //---------------match password code here---------------------
+    //============================================match password code here===============================================================
     console.log(loginUser)
 
 

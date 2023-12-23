@@ -49,6 +49,33 @@ const Membershipcontroller ={
         }
         res.json(members)
      },
+     async  autocompleteMembers(req, res, next) {
+        try {
+            const searchTerm = req.query.q;
+        
+            if (!searchTerm) {
+              return res.status(400).json({ error: 'Search term is missing' });
+            }
+        
+            const regex = new RegExp(searchTerm, 'i');
+            
+            const matchingMembers = await Membership.find({
+              $or: [
+                { membershipno: { $regex: regex } },
+                { ownername: { $regex: regex } },
+                { telephone: { $regex: regex } },
+              ],
+            })
+            .select('-_id membershipno ownername telephone')
+            .limit(5);
+        
+            res.json(matchingMembers);
+          } catch (error) {
+            console.error('Error calling API:', error);
+            res.status(500).json({ error: 'Internal server error' });
+          }
+     },
+
      async updatamembers(req,res,next){
         const {membershipno,ownername,nationality,nationalid,telephone,extratelelphone}=req.body;
         console.log(req.body,"This is From Update api")
