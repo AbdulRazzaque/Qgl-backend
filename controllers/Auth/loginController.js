@@ -6,40 +6,43 @@ const JWT = require("../../services/Jwt.js");
 const LoginSchema = {
   async login(req, res, next) {
     const loginSchema = Joi.object({
-      name: Joi.string().required(),
-      password: Joi.string(),
+      name: Joi.string().required().messages({
+        "string.empty": "Name is required",
+        "any.required": "Name is required",
+      }),
+      password: Joi.string().required().messages({
+        "string.empty": "Password is required",
+        "any.required": "Password is required",
+      }),
     });
 
     const { error } = loginSchema.validate(req.body);
     if (error) {
-      return next(error);
-    } 
-    //-------------------------------------------chack user-----------------------
-    let AccessToken;
-    let loginUser
+      return next(new Error(error.details[0].message)); // Return the custom message
+    }
+
+    let loginUser;
     try {
-       loginUser = await User.findOne({ name: req.body.name });
+      loginUser = await User.findOne({ name: req.body.name });
 
       if (!loginUser) {
-        return next(Error("User and Password are not found"));
+        return next(new Error("User and password do not match"));
       }
-      const match =  bcrypt.compare(req.body.password, loginUser.password);
+
+      const match = await bcrypt.compare(req.body.password, loginUser.password);
 
       if (!match) {
-        return next(Error("User and Password are Wrong"));
+        return next(new Error("User and password do not match"));
       }
-      
-    AccessToken = JWT.sign({ _id: loginUser._id });
-    res.json(loginUser);
+
+      const AccessToken = JWT.sign({ _id: loginUser._id });
+      res.json({ user: loginUser, token: AccessToken });
+
     } catch (error) {
       return next(error);
     }
-    //============================================match password code here===============================================================
-    console.log(loginUser)
-
-
-
-  },
+  }
 };
-// export default LoginSchema;
+
 module.exports = LoginSchema;
+

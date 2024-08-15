@@ -2,69 +2,10 @@ const Receipt = require('../../model/Qgl/QglDB.js');
 const date = require("date-and-time"); 
 
 const QglController={
-    //--------------------------------------------------------- post request ------------------------------------------------------------
-    // async receipt(req, res, next) {
-    //   const { doc, date, name, amount, membership, cash, being, microchip, category,telephone, duplicate } = req.body;
-    //   console.log(req.body, "Check here first time");
-    
-    //   if (!doc || !date || !name || !amount || !membership || !cash || !being  || !category || !telephone) {
-    //     res.status(400).send("Please fill all required fields");
-    //   } else {
-    //     try {
-    //       const receipts = [];
-    
-    //       // Duplicate data based on the 'duplicate' field
-    //       for (let i = 0; i < duplicate; i++) {
-    //         const docNumber = `${doc}/${i}`;
-    //         const receiptData = await Receipt.create({
-    //           doc:docNumber,
-    //           date,
-    //           name, 
-    //           amount,
-    //           membership,
-    //           cash,
-    //           being,
-    //           category,
-    //           telephone
-    //         });
-            
-    //         // Cheack if 'microchip' is present before adding it to receiptData 
-    //         if (req.body.microchip){
-    //           receiptData.microchip = req.body.microchip;
-    //         }
-    //         const receipt = await Receipt.create(receiptData)
-
-    //         if (!receipt) {
-    //           return next(new Error("Receipt Not Added"));
-    //         }
-    
-    //         receipts.push(receipt);
-    //       }
-    
-    //       console.log(req.body);
-    //       res.json(receipts);
-    //       console.log(receipts, "Check here second time");
-    //     } catch (error) {
-    //       console.error(error);
-    //       return next(error);
-    //     }
-    //   }
-    // },
-    
+    //--------------------------------------------------------- post request ------------------------------------------------------------    
     async receipt(req, res, next) {
-      const {
-        doc,
-        date,
-        name,
-        amount,
-        membership,
-        cash,
-        being,
-        category,
-        telephone,
-        duplicate,
-        microchip
-      } = req.body;
+      const { doc, date, name, amount, membership, cash, being, category, telephone, duplicate, microchip, userName } = req.body;
+
     
       console.log(req.body, "Check here first time");
     
@@ -77,8 +18,10 @@ const QglController={
         !cash ||
         !being ||
         !category ||
-        !telephone
-      ) {
+        !telephone ||
+        !userName
+      )
+       {
         res.status(400).send("Please fill all required fields");
       } else {
         try {
@@ -97,6 +40,7 @@ const QglController={
               being,
               category,
               telephone,
+              userName,
             };
     
             // Cheack if 'microchip' is a valid data before adding it to receiptData
@@ -125,7 +69,7 @@ const QglController={
     
     //--------------------------------------------------------- update request ------------------------------------------------------------
     async updatereceipt(req,res,next){
-      const {doc,date,name,amount,membership,cash,being,microchip,category,telephone}=req.body;
+      const {doc,date,name,amount,membership,cash,being,microchip,category,telephone,userName}=req.body;
       console.log(req.body,"Firs time cheack")
       let updatereceipt;
       
@@ -142,7 +86,8 @@ const QglController={
               being,
               microchip,
               category,
-              telephone
+              telephone,
+              userName
           },{new:true}
           );
       } catch (error) {
