@@ -5,24 +5,35 @@ const QglController={
     //--------------------------------------------------------- post request ------------------------------------------------------------    
     async receipt(req, res, next) {
       const { doc, date, name, amount, membership, cash, being, category, telephone, duplicate, microchip, userName } = req.body;
-
     
       console.log(req.body, "Check here first time");
     
-      if (
-        !doc ||
-        !date ||
-        !name ||
-        !amount ||
-        !membership ||
-        !cash ||
-        !being ||
-        !category ||
-        !telephone ||
-        !userName
-      )
-       {
-        res.status(400).send("Please fill all required fields");
+      // Check if userName is empty
+      if (!userName) {
+        return res.status(400).send("Please login again");
+      }
+    
+      // List of required fields (excluding userName, as it's checked separately)
+      const requiredFields = [
+        { field: 'doc', value: doc },
+        { field: 'date', value: date },
+        { field: 'name', value: name },
+        { field: 'amount', value: amount },
+        { field: 'membership', value: membership },
+        { field: 'cash', value: cash },
+        { field: 'being', value: being },
+        { field: 'category', value: category },
+        { field: 'telephone', value: telephone }
+      ];
+    
+      // Find missing fields
+      const missingFields = requiredFields.filter(f => !f.value).map(f => f.field);
+    
+      if (missingFields.length > 0) {
+        // If there are missing fields, return a 400 status with an error message listing them
+        return res.status(400).send(
+          `Please fill all required fields: ${missingFields.join(', ')}`
+        );
       } else {
         try {
           const receipts = [];
@@ -43,9 +54,9 @@ const QglController={
               userName,
             };
     
-            // Cheack if 'microchip' is a valid data before adding it to receiptData
-            if (microchip && !isNaN (Date.parse(microchip))) {
-              receiptData.microchip = new Date( microchip);
+            // Check if 'microchip' is a valid date before adding it to receiptData
+            if (microchip && !isNaN(Date.parse(microchip))) {
+              receiptData.microchip = new Date(microchip);
             }
     
             const receipt = await Receipt.create(receiptData);
@@ -66,6 +77,7 @@ const QglController={
         }
       }
     },
+    
     
     //--------------------------------------------------------- update request ------------------------------------------------------------
     async updatereceipt(req,res,next){
