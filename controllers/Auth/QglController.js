@@ -130,25 +130,44 @@ const QglController={
 
 
     //--------------------------------------------------------- Get Data by date request ------------------------------------------------------------
-    async monthlyreportQGl(req,res,next){
-      let pre;
-   
-      let d1 = date.parse(req.body.from, "YYYY/MM/DD");
-      let d2 = date.parse(req.body.to, "YYYY/MM/DD");
-    console.log(req.body,'req.body')
-      try {
-        pre = await Receipt.find({
-          
-   $and:[{date:{$gte:d1}},{date:{$lte:d2}}]})
-       
-      } catch (error) {
-        return next(error);
-      }
-      // res.json(pre)
-      res.status(200).send({ msg: "success", pre });
-      console.log(pre);
-      
-    },
+// Monthly Report Controller
+  async  monthlyreportQGl(req, res, next) {
+  try {
+    const { from, to } = req.body;
+
+    // Validate request
+    if (!from || !to) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide both 'from' and 'to' dates.",
+      });
+    }
+
+    // Parse Dates
+    let d1 = new Date(from);
+    let d2 = new Date(to);
+
+    d1.setHours(0, 0, 0, 0);        // Start of day
+    d2.setHours(23, 59, 59, 999);   // End of day
+
+    // Query Receipts
+    const receipts = await Receipt.find({
+      date: { $gte: d1, $lte: d2 },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Monthly report fetched successfully",
+      data: receipts,
+    });
+  } catch (error) {
+    console.error("❌ Error in monthlyreportQGl:", error);
+    return next(error);
+  }
+},
+
+
+
  
 
     //--------------------------------------------------------- Delete request ------------------------------------------------------------
