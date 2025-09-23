@@ -6,7 +6,7 @@ const QglController={
     async receipt(req, res, next) {
       const { doc, date, name, amount, membership, cash, being, category, telephone, duplicate, microchip, userName } = req.body;
     
-      console.log(req.body, "Check here first time");
+      // console.log(req.body, "Check here first time");
     
       // Check if userName is empty
       if (!userName) {
@@ -68,9 +68,9 @@ const QglController={
             receipts.push(receipt);
           }
     
-          console.log(req.body);
+          // console.log(req.body);
           res.json(receipts);
-          console.log(receipts, "Check here second time");
+          // console.log(receipts, "Check here second time");
         } catch (error) {
           console.error(error);
           return next(error);
@@ -82,7 +82,7 @@ const QglController={
     //--------------------------------------------------------- update request ------------------------------------------------------------
     async updatereceipt(req,res,next){
       const {doc,date,name,amount,membership,cash,being,microchip,category,telephone,userName}=req.body;
-      console.log(req.body,"Firs time cheack")
+      // console.log(req.body,"Firs time cheack")
       let updatereceipt;
       
         try{
@@ -107,7 +107,7 @@ const QglController={
         
       }
       res.json(updatereceipt)
-      console.log(updatereceipt,"This ceheack second time")
+      // console.log(updatereceipt,"This ceheack second time")
 
   },
 
@@ -175,7 +175,7 @@ const QglController={
     let receipt;
     try {
       receipt = await Receipt.findByIdAndDelete({_id:req.params.id});
-      console.log(req.params.id)
+      // console.log(req.params.id)
       if(!receipt){
         return next (new Error("Can't Delete this row"))
       }
@@ -185,26 +185,13 @@ const QglController={
     }
     res.json(receipt)
   },
-  // async deletereceipts(req,res,next){
- 
-  //   try {
-  //    const  result = await Receipt.remove({_id:{$in:req.params.id}});
-  //     if (result.deletedCount === 0){
-  //       return res.status(404).json({Message: "No document matched the IDs"})
-  //     }
-  //     res.status(204).end(); // Send a successfull "NO Content " response
-  //   } catch (error) {
-  //     return next(error)
-      
-  //   }
-  //   // res.json(receipt)
-  // }
+
   async deletereceipts(req, res, next) {
     try {
       // Split the comma- Separted IDs into an array
       const ids = req.params.id.split(',')
       const result = await Receipt.deleteMany({ _id: { $in: ids } });
-      console.log(ids)
+      // console.log(ids)
       if (result.deletedCount === 0) {
         return res.status(404).json({ Message: "No document matched the IDs" });
       }
