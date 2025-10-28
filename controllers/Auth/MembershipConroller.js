@@ -1,42 +1,113 @@
 const Membership = require("../../model/Qgl/MembershipDb")
   
 const Membershipcontroller ={
-     async addmembership(req,res,next){
-        const {membershipno,ownername,nationality,nationalid,telephone,extratelelphone}=req.body;
-        if(!membershipno|| !ownername){
-            res.status(400).send("please fill all required fields")
-             // res.status(400).send({ message: 'This product is already available' });
-         }
-        const membershipexist = await Membership.exists({membershipno:req.body.membershipno})
-        if(membershipexist){
-            res.status(400).send("This Membership Already Exist")
-            console.log(membershipexist,"membershipexist")
-        }
-        else{
-            let membership
-            try {
-                membership = await Membership.create({
-                    membershipno,
-                    ownername,
-                    nationality,
-                    nationalid,
-                    telephone,
-                    extratelelphone
+  async addmembership(req, res, next) {
+    try {
+      const { membershipno, ownername, nationality, nationalid, telephone, extratelelphone } = req.body;
 
-                })
-                if(!membership){
-                    return next (new Error ("Memeber is not add"))
-                }
-            } catch (error) {
-                return next (error);
-                // res.status(400).send(error)
-                
-            }
-            res.json(membership)
-            console.log(membership)
+      if (!membershipno || !ownername) {
+        return res.status(400).send("Please fill all required fields: membershipno & ownername");
+      }
+
+      const trimmedNo = String(membershipno).trim();
+
+      // quick existence check (user-friendly)
+      const exists = await Membership.exists({ membershipno: trimmedNo });
+      if (exists) {
+        return res.status(400).send("This Membership Already Exist");
+      }
+
+      const membership = await Membership.create({
+        membershipno: trimmedNo,
+        ownername: String(ownername).trim(),
+        nationality: nationality || "",
+        nationalid: nationalid || "",
+        telephone: telephone || "",
+        extratelelphone: extratelelphone || "",
+      });
+
+      return res.json(membership);
+    } catch (error) {
+      // duplicate key race-condition
+      if (error && error.code === 11000) {
+        return res.status(400).send("Duplicate membership number (already exists).");
+      }
+      console.error("addmembership error:", error);
+      return next(error);
+    }
+  },
+ async addmemberships(req, res, next) {
+    try {
+      const members = req.body.members;
+      if (!Array.isArray(members) || members.length === 0) {
+        return res.status(400).send("No members provided");
+      }
+
+      // normalize
+      const normalized = members.map((m) => ({
+        membershipno: String(m.membershipno || "").trim(),
+        ownername: String(m.ownername || "").trim(),
+        nationality: m.nationality || "",
+        nationalid: m.nationalid || "",
+        telephone: m.telephone || "",
+        extratelelphone: m.extratelelphone || "",
+      }));
+
+      // required fields
+      for (let i = 0; i < normalized.length; i++) {
+        if (!normalized[i].membershipno || !normalized[i].ownername) {
+          return res.status(400).send(`Required field missing at row ${i + 1}`);
         }
-     },
-  async   getmembers(req,res,next){
+      }
+
+      // de-duplicate within file silently (frontend already validates, but backend remains safe)
+      const uniqueMap = new Map();
+      for (const m of normalized) {
+        if (!uniqueMap.has(m.membershipno)) uniqueMap.set(m.membershipno, m);
+      }
+      const uniqueList = Array.from(uniqueMap.values());
+
+      // Use bulkWrite with upsert + $setOnInsert to insert new and skip existing without modifying them
+      const ops = uniqueList.map((m) => ({
+        updateOne: {
+          filter: { membershipno: m.membershipno },
+          update: { $setOnInsert: m },
+          upsert: true,
+        },
+      }));
+
+      const result = await Membership.bulkWrite(ops, { ordered: false });
+
+      // Gather inserted indices from result
+      const upserted = result?.upsertedIds || [];
+      const upsertIndexes = Array.isArray(upserted)
+        ? upserted.map((u) => u.index)
+        : Object.keys(upserted).map((k) => Number(k));
+
+      const insertedMemberships = upsertIndexes
+        .map((i) => uniqueList[i]?.membershipno)
+        .filter(Boolean);
+      const allNos = uniqueList.map((m) => m.membershipno);
+      const skippedMemberships = allNos.filter((no) => !insertedMemberships.includes(no));
+
+      return res.json({
+        code: "BULK_MEMBERS_RESULT",
+        insertedCount: insertedMemberships.length,
+        skippedCount: skippedMemberships.length,
+        insertedMemberships,
+        skippedMemberships,
+      });
+    } catch (error) {
+      // With bulkWrite + $setOnInsert, duplicates should not throw, but handle edge cases gracefully
+      if (error && error.code === 11000) {
+        // best-effort: treat as partial success
+        return res.status(207).json({ code: "PARTIAL_SUCCESS", message: "Some records already existed or were inserted concurrently. Try again to upload remaining.", details: String(error) });
+      }
+      console.error("addmemberships error:", error);
+      return next(error);
+    }
+  },
+  async getmembers(req,res,next){
         let members;
         try {
             members = await Membership.find().sort({_id:-1})
@@ -92,20 +163,19 @@ const Membershipcontroller ={
         }
         res.json(updatemembers)
      },
-     async deletemembers(req,res,next){
-        let members;
-        try {
-            members = await Membership.findByIdAndDelete({_id:req.params.id});
-            console.log(members)
-            if(!members){
-                res.send("Can't Delete this row")
-            }
-        } catch (error) {
-            return next(error)
-            
-        }
-        res.json(members)
-     }
+
+  async deletemembers(req, res, next) {
+    try {
+      const members = await Membership.findByIdAndDelete({ _id: req.params.id });
+      if (!members) {
+        return res.status(400).send("Can't Delete this row");
+      }
+      return res.json(members);
+    } catch (error) {
+      console.error("deletemembers error:", error);
+      return next(error);
+    }
+  },
 }
 
 module.exports = Membershipcontroller 

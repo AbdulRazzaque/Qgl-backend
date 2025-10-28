@@ -12,12 +12,7 @@ const Route = express.Router()
 Route.post('/register',registerSchema.register)
 Route.post('/login',LoginSchema.login)
 Route.get('/me',  auth, userController.me)
-//=========================RP Renewal Form======================================
-// Route.get('/allRprenewalform/',RprenewalformController.Rprenewalform)
-// Route.get('/oneRprenewalform/:id',RprenewalformController.oneRprenewalform)
-// Route.post('/Rprenewalform', auth,RprenewalformController.Rprenewalform)
-// Route.put('/UpdateRprenewalform/:id', auth,RprenewalformController.UpdateRprenewalform)
-// Route.delete('/deleteUpdateRprenewalform/:id', auth,RprenewalformController.deleteUpdateRprenewalform)
+
 // //=====================================================================================
 Route.post('/qgl/',QglController.receipt)
 Route.post('/monthlyreportQGl',QglController.monthlyreportQGl)
@@ -27,6 +22,7 @@ Route.delete('/deletereceipt/:id',QglController.deletereceipt)
 Route.delete('/deletereceipts/:id',QglController.deletereceipts)
 // =========================Member Ship Api======================================
 Route.post('/addmembership/',Membershipcontroller.addmembership)
+Route.post('/addmemberships/',Membershipcontroller.addmemberships)
 Route.get('/getmembers/',Membershipcontroller.getmembers)
 Route.get('/autocompleteMembers/',Membershipcontroller.autocompleteMembers)
 Route.put('/updatamembers/:id',Membershipcontroller.updatamembers)
