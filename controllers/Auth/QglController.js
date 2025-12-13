@@ -113,7 +113,7 @@ const QglController={
 
     //--------------------------------------------------------- Get request ------------------------------------------------------------
 
-  async getreceipt(req,res,next){
+  async getreceipts(req,res,next){
     let receipt
     try {
       receipt = await Receipt.find().sort({_id:-1});

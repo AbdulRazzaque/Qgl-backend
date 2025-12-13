@@ -20,7 +20,10 @@ dotenv.config({
 });
 
 // global.appRoot= path.resolve(__dirname);
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:3000", // frontend ka origin
+  credentials: true,               // allow cookies/auth headers
+}));
 app.use(express.urlencoded({extended: false}))
 app.use(express.json());
 app.use('/api',Route)
