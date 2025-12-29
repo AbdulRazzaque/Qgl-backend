@@ -7,6 +7,7 @@ const Route = require("./routes/index.js");
 const path = require('path');
 const cors = require('cors');
 const camelRoutes = require("./routes/camelRoutes.js")
+const geneticRoutes = require("./routes/geneticRoutes.js")
 
 
 const app = express();
@@ -36,6 +37,7 @@ mongoose
     console.log(error);
   });
 app.use('/api/camels', camelRoutes);
+app.use('/api/genetic', geneticRoutes);
 app.use(errorhandler);
 app.listen(process.env.PORT, () => {
   console.log(`http://localhost:${process.env.PORT}`);
