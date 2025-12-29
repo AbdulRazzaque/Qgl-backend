@@ -35,8 +35,8 @@ const LoginSchema = {
         return next(new Error("User and password do not match"));
       }
 
-      const AccessToken = JWT.sign({ _id: loginUser._id });
-      res.json({ user: loginUser, token: AccessToken });
+      const AccessToken = JWT.sign({ _id: loginUser._id, role: loginUser.role });
+      res.json({ user: loginUser, token: AccessToken, role: loginUser.role });
 
     } catch (error) {
       return next(error);

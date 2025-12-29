@@ -4,12 +4,15 @@ const date = require("date-and-time");
 const QglController={
     //--------------------------------------------------------- post request ------------------------------------------------------------    
     async receipt(req, res, next) {
-      const { doc, date, name, amount, membership, cash, being, category, telephone, duplicate, microchip, userName } = req.body;
+      const { doc, date, name, amount, membership, cash, being, category, telephone, duplicate, microchip } = req.body;
+      // Get user info from req.user if available (set by auth middleware)
+      const createdBy = req.user ? req.user.name : undefined;
+      const createdByRole = req.user ? req.user.role : undefined;
     
       // console.log(req.body, "Check here first time");
     
-      // Check if userName is empty
-      if (!userName) {
+      // Check if user is authenticated
+      if (!createdBy) {
         return res.status(400).send("Please login again");
       }
     
@@ -51,7 +54,8 @@ const QglController={
               being,
               category,
               telephone,
-              userName,
+              createdBy,
+              createdByRole
             };
     
             // Check if 'microchip' is a valid date before adding it to receiptData
@@ -81,7 +85,7 @@ const QglController={
     
     //--------------------------------------------------------- update request ------------------------------------------------------------
     async updatereceipt(req,res,next){
-      const {doc,date,name,amount,membership,cash,being,microchip,category,telephone,userName}=req.body;
+      const {doc,date,name,amount,membership,cash,being,microchip,category,telephone}=req.body;
       // console.log(req.body,"Firs time cheack")
       let updatereceipt;
       
@@ -98,8 +102,7 @@ const QglController={
               being,
               microchip,
               category,
-              telephone,
-              userName
+              telephone
           },{new:true}
           );
       } catch (error) {

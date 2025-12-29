@@ -7,12 +7,13 @@ const JWT = require("../../services/Jwt.js");
  
 const registerSchema = {
   async register(req, res, next) {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     const RegisterSchema = Joi.object({
       name: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string(),
+      role: Joi.string().valid("SuperAdmin", "Admin", "User").optional()
     });
 
     const { error } = RegisterSchema.validate(req.body);
@@ -20,11 +21,9 @@ const registerSchema = {
       return next(error);
     }
 
-    ///------check database user already exsit.-----------------------
-
+    // Check if user already exists
     try {
       const exist = await User.exists({ email: email });
-
       if (exist) {
         return next(Error("User Already Exist."));
       }
@@ -32,21 +31,25 @@ const registerSchema = {
       return next(err);
     }
 
-    //--------hashed password-----------
-
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    //==========modle save in a badabase--------------------
+    // Only allow SuperAdmin to set role, otherwise default to 'User'
+    let userRole = "User";
+    if (req.user && req.user.role === "SuperAdmin" && role) {
+      userRole = role;
+    }
 
     const user = new User({
       name,
       email,
       password: hashedPassword,
+      role: userRole
     });
     let AccessToken;
     try {
       const result = await user.save();
-      AccessToken = JWT.sign({ _id: result._id });
+      AccessToken = JWT.sign({ _id: result._id, role: result.role });
     } catch (err) {
       return next(err);
     }

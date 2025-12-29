@@ -14,7 +14,8 @@ const Receipt = new Schema({
   category:{type:String,require:true},
   microchip:{type:Date,require:true},
   telephone:{type:String,require:true},
-  userName:{type:String,require:true},
+  createdBy: { type: String, required: false },
+  createdByRole: { type: String, required: false },
 })
 
 // export default mongoose.model('Receipt',Receipt,"Receipt")
