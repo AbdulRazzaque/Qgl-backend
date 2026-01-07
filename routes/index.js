@@ -6,8 +6,11 @@ const userController = require('../controllers/Auth/userController.js');
 const Membershipcontroller = require('../controllers/Auth/MembershipConroller.js')
 const auth = require('../middlewares/auth.js');
 const QglController = require('../controllers/Auth/QglController.js');
+const DashboardController = require('../controllers/Qgl/DashboardController.js');
 
 const Route = express.Router()
+// Dashboard stats endpoint
+Route.get('/dashboard-stats', DashboardController.stats);
 //-------------------Auth Routh-----------------------------------------
 Route.post('/register',registerSchema.register)
 Route.post('/login',LoginSchema.login)

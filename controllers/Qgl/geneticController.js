@@ -2,14 +2,12 @@
 const GeneticRecord = require("../../model/Qgl/GeneticRecord");
 
 const geneticController ={
-    async createGeneticRecord  (req, res) {
+ async createGeneticRecord(req, res) {
   try {
-    const { customer, animals } = req.body;
+    const { receiptId, animals, sampleType, processing } = req.body;
 
-    if (!customer?.name || !customer?.tel) {
-      return res.status(400).json({
-        message: "Customer name and telephone are required",
-      });
+    if (!receiptId) {
+      return res.status(400).json({ message: "Receipt ID is required" });
     }
 
     if (!Array.isArray(animals) || animals.length === 0) {
@@ -18,7 +16,12 @@ const geneticController ={
       });
     }
 
-    const record = await GeneticRecord.create({ customer, animals });
+    const record = await GeneticRecord.create({
+      receiptId,
+      animals,
+      sampleType,
+      processing,
+    });
 
     return res.status(201).json({
       message: "Genetic record created successfully",
@@ -26,15 +29,15 @@ const geneticController ={
     });
   } catch (error) {
     console.error("Create Genetic Record Error:", error);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
+    return res.status(500).json({ message: "Internal server error" });
   }
 },
 
-async getGeneticRecords (req, res)  {
+async getGeneticRecords(req, res) {
   try {
-    const records = await GeneticRecord.find().sort({ createdAt: -1 });
+    const records = await GeneticRecord.find()
+      .populate("receiptId")
+      .sort({ createdAt: -1 });
 
     return res.status(200).json({
       count: records.length,
@@ -42,25 +45,17 @@ async getGeneticRecords (req, res)  {
     });
   } catch (error) {
     console.error("Get Genetic Records Error:", error);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
+    return res.status(500).json({ message: "Internal server error" });
   }
 },
 
- async updateGeneticRecord  (req, res){
+async updateGeneticRecord(req, res) {
   try {
     const { id } = req.params;
-    const { customer, animals } = req.body;
+    const { animals, sampleType, processing } = req.body;
 
     if (!id) {
       return res.status(400).json({ message: "Record id is required" });
-    }
-
-    if (!customer?.name || !customer?.tel) {
-      return res.status(400).json({
-        message: "Customer name and telephone are required",
-      });
     }
 
     if (!Array.isArray(animals) || animals.length === 0) {
@@ -71,17 +66,12 @@ async getGeneticRecords (req, res)  {
 
     const updated = await GeneticRecord.findByIdAndUpdate(
       id,
-      { customer, animals },
-      {
-        new: true,          // return updated doc
-        runValidators: true,
-      }
+      { animals, sampleType, processing },
+      { new: true, runValidators: true }
     );
 
     if (!updated) {
-      return res.status(404).json({
-        message: "Genetic record not found",
-      });
+      return res.status(404).json({ message: "Genetic record not found" });
     }
 
     return res.status(200).json({
@@ -90,12 +80,24 @@ async getGeneticRecords (req, res)  {
     });
   } catch (error) {
     console.error("Update Genetic Record Error:", error);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
+    return res.status(500).json({ message: "Internal server error" });
   }
-
 },
-
+async deleteGeneticRecord(req, res) {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({ message: "Record id is required" });
+    }
+    const deleted = await GeneticRecord.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Genetic record not found" });
+    }
+    return res.status(200).json({ message: "Genetic record deleted successfully" });
+  } catch (error) {
+    console.error("Delete Genetic Record Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+},
 }
 module.exports = geneticController;

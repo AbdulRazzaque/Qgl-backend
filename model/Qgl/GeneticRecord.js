@@ -24,10 +24,8 @@ const animalSchema = new mongoose.Schema(
 
 const geneticRecordSchema = new mongoose.Schema(
   {
-    customer: {
-      name: { type: String, required: true },
-      tel: { type: String, required: true },
-      submissionDate: Date,
+    
+      receiptId:{type:mongoose.Schema.Types.ObjectId,ref:"Receipt" ,required:true},
       sampleType: {
         type: String,
         enum: ["Blood", "Hair", "Others"],
@@ -38,7 +36,7 @@ const geneticRecordSchema = new mongoose.Schema(
         enum: ["Normal", "Urgent"],
         default: "Normal",
       },
-    },
+    
     animals: {
       type: [animalSchema],
       required: true,
